@@ -30,12 +30,12 @@ You can install this library directly into another project using its Git source 
 
 #### Using `pip`:
 ```bash
-pip install "git+https://github.com/yourusername/ScreenAI_OCR.git"
+pip install "git+https://github.com/bropines/google-screen-ai-wraper.git"
 ```
 
 #### Using `uv`:
 ```bash
-uv pip install "git+https://github.com/yourusername/ScreenAI_OCR.git"
+uv pip install "git+https://github.com/bropines/google-screen-ai-wraper.git"
 ```
 
 ---
@@ -46,10 +46,10 @@ If you manage your project using `uv` (`pyproject.toml` workspace environment), 
 
 ```bash
 # Add as local path dependency
-uv add --path ./google_screen_ai
+uv add --path ./google-screen-ai-wraper
 
 # Add as remote Git dependency
-uv add "git+https://github.com/yourusername/ScreenAI_OCR.git"
+uv add "git+https://github.com/bropines/google-screen-ai-wraper.git"
 ```
 
 ---

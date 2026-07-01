@@ -40,12 +40,12 @@ You can install the package directly into any Python project using its Git sourc
 
 #### Using `pip`:
 ```bash
-pip install "git+https://github.com/yourusername/ScreenAI_OCR.git"
+pip install "git+https://github.com/bropines/google-screen-ai-wraper.git"
 ```
 
 #### Using `uv` (pip compatibility mode):
 ```bash
-uv pip install "git+https://github.com/yourusername/ScreenAI_OCR.git"
+uv pip install "git+https://github.com/bropines/google-screen-ai-wraper.git"
 ```
 
 ---
@@ -56,12 +56,12 @@ If you manage your project using `uv` (`pyproject.toml` workspace environment), 
 
 #### Add local path:
 ```bash
-uv add --path ./google_screen_ai
+uv add --path ./google-screen-ai-wraper
 ```
 
 #### Add Git URL:
 ```bash
-uv add "git+https://github.com/yourusername/ScreenAI_OCR.git"
+uv add "git+https://github.com/bropines/google-screen-ai-wraper.git"
 ```
 
 ---

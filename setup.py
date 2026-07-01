@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="google_screen_ai",
+    name="google-screen-ai-wraper",
     version="1.0.0",
     description="Python wrapper and CLI for Google's ScreenAI OCR and Main Content Extraction",
-    author="Antigravity",
+    author="bropines",
     packages=find_packages(),
     install_requires=[
         "protobuf>=4.0.0",
