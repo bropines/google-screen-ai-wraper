@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# ScreenAI binaries and models (downloaded on demand)
+screen-ai-windows-amd64/
+data/
+google_screen_ai/resources/
+
+# IDE files
+.vscode/
+.idea/
+
+# Temp test files
+temp_test_image.png
+test_cli.png
