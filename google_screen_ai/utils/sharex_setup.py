@@ -30,7 +30,7 @@ def terminate_sharex():
         print("ShareX is currently running. Closing it to apply config changes...")
         try:
             subprocess.run(["taskkill", "/F", "/IM", "ShareX.exe"], capture_output=True)
-            time.sleep(1)
+            time.sleep(1.5)
         except Exception as e:
             print(f"Error closing ShareX: {e}")
 
@@ -122,7 +122,6 @@ def setup_sharex_config(model_dir: Union[str, Path] = None) -> bool:
         if not se.lower().endswith(("python.exe", "pythonw.exe", "python", "pythonw")):
             executable_path = se
         else:
-            # Fallback to python -m google_screen_ai
             executable_path = f'"{se}" -m google_screen_ai'
 
     print(f"Detected ScreenAI CLI path: {executable_path}")
@@ -144,18 +143,19 @@ def setup_sharex_config(model_dir: Union[str, Path] = None) -> bool:
         programs = task.get("ExternalPrograms") or []
         for prog in programs:
             if prog.get("Name") == "screen-ai":
+                hk["HotkeyInfo"] = {"Hotkey": "OemQuotes, Control, Shift", "Win": False}
                 prog["Path"] = executable_path
                 prog["Args"] = 'ocr "$input" --sharex'
                 prog["IsActive"] = True
                 exists = True
-                print("Found existing 'screen-ai' task in ShareX. Updating configuration...")
+                print("Found existing 'screen-ai' task in ShareX. Updating hotkey to Ctrl + Shift + ' and executable path...")
                 break
         if exists:
             break
 
     if not exists:
         new_entry = {
-            "HotkeyInfo": {"Hotkey": "S, Control, Shift", "Win": False},
+            "HotkeyInfo": {"Hotkey": "OemQuotes, Control, Shift", "Win": False},
             "TaskSettings": {
                 "Description": "Google ScreenAI OCR (screen-ai)",
                 "Job": "RectangleLight",
@@ -177,7 +177,7 @@ def setup_sharex_config(model_dir: Union[str, Path] = None) -> bool:
             },
         }
         hotkeys.append(new_entry)
-        print("Added new 'Ctrl + Shift + S' hotkey action for Google ScreenAI OCR.")
+        print("Added new 'Ctrl + Shift + '' hotkey action for Google ScreenAI OCR.")
 
     config["Hotkeys"] = hotkeys
 
@@ -192,12 +192,15 @@ def setup_sharex_config(model_dir: Union[str, Path] = None) -> bool:
 
         sharex_exe = get_sharex_executable_path()
         if sharex_exe:
-            print(f"Restarting ShareX from: {sharex_exe}...")
-            subprocess.Popen([str(sharex_exe)], start_new_session=True)
+            print(f"Opening ShareX from: {sharex_exe}...")
+            if sys.platform == "win32":
+                os.startfile(str(sharex_exe))
+            else:
+                subprocess.Popen([str(sharex_exe)])
         else:
-            print("ShareX executable not automatically found. Please restart ShareX manually.")
+            print("ShareX executable not automatically found. Please start ShareX manually.")
 
-        print("\nDefault Hotkey: Ctrl + Shift + S (Region Capture -> ScreenAI OCR -> Clipboard)")
+        print("\nDefault Hotkey: Ctrl + Shift + ' (Region Capture -> ScreenAI OCR -> Clipboard)")
         return True
     except Exception as e:
         print(f"Error saving ShareX config: {e}")

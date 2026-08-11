@@ -13,7 +13,7 @@ screen-ai --setup-sharex
 ```
 
 * **Auto-Download:** Checks if ScreenAI binaries and models exist, downloading them automatically if missing.
-* **Auto-Hotkey:** Configures **`Ctrl + Shift + S`** in ShareX to capture screen regions, run Google ScreenAI OCR on-device, and copy text directly to your clipboard.
+* **Auto-Hotkey:** Configures **`Ctrl + Shift + '`** in ShareX to capture screen regions, run Google ScreenAI OCR on-device, and copy text directly to your clipboard.
 
 ### Clipboard Copy Flag
 You can also copy OCR results directly to the clipboard from CLI using the `--sharex` / `-sx` flag:

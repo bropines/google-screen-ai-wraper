@@ -15,7 +15,7 @@ screen-ai --setup-sharex
 ### What `--setup-sharex` does:
 1. **Verifies Engine & Models:** Checks if ScreenAI library and model files are present. If missing, it downloads the latest binaries from Google CIPD automatically.
 2. **Locates ShareX Config:** Finds `HotkeysConfig.json` in your Windows `Documents/ShareX` folder.
-3. **Adds/Updates Hotkey:** Configures a custom action mapped to **`Ctrl + Shift + S`**:
+3. **Adds/Updates Hotkey:** Configures a custom action mapped to **`Ctrl + Shift + '`**:
    - Executes: `screen-ai ocr "$input" --sharex`
    - Capture Mode: Rectangle Light
 4. **Safely Restarts ShareX:** Safely closes ShareX to write changes without file locking issues, then restarts ShareX.
