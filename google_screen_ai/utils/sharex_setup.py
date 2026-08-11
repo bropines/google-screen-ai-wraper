@@ -155,7 +155,7 @@ def setup_sharex_config(model_dir: Union[str, Path] = None) -> bool:
 
     if not exists:
         new_entry = {
-            "HotkeyInfo": {"Hotkey": "O, Control, Shift", "Win": False},
+            "HotkeyInfo": {"Hotkey": "S, Control, Shift", "Win": False},
             "TaskSettings": {
                 "Description": "Google ScreenAI OCR (screen-ai)",
                 "Job": "RectangleLight",
@@ -177,7 +177,7 @@ def setup_sharex_config(model_dir: Union[str, Path] = None) -> bool:
             },
         }
         hotkeys.append(new_entry)
-        print("Added new 'Ctrl + Shift + O' hotkey action for Google ScreenAI OCR.")
+        print("Added new 'Ctrl + Shift + S' hotkey action for Google ScreenAI OCR.")
 
     config["Hotkeys"] = hotkeys
 
@@ -197,7 +197,7 @@ def setup_sharex_config(model_dir: Union[str, Path] = None) -> bool:
         else:
             print("ShareX executable not automatically found. Please restart ShareX manually.")
 
-        print("\nDefault Hotkey: Ctrl + Shift + O (Region Capture -> ScreenAI OCR -> Clipboard)")
+        print("\nDefault Hotkey: Ctrl + Shift + S (Region Capture -> ScreenAI OCR -> Clipboard)")
         return True
     except Exception as e:
         print(f"Error saving ShareX config: {e}")
