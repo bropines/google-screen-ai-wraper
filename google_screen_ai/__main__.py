@@ -6,6 +6,8 @@ from dataclasses import asdict
 
 from .downloader import download_screen_ai, is_installed, get_cipd_platform
 from .engine import ScreenAI
+from .utils.sharex import copy_to_clipboard
+from .utils.sharex_setup import setup_sharex_config
 
 def handle_download(args):
     """Download ScreenAI binaries and models."""
@@ -32,7 +34,6 @@ def handle_ocr(args):
         
     try:
         engine = ScreenAI(model_dir=model_dir)
-        # Enable debug mode if verbose
         if args.verbose:
             engine.enable_debug_mode()
             
@@ -44,13 +45,17 @@ def handle_ocr(args):
         if args.format == "text":
             print(result.text)
         elif args.format == "json":
-            # Convert dataclass to dict and format it to JSON
-            # Ignore raw_proto as it's not JSON serializable directly
             res_dict = asdict(result)
             res_dict.pop("raw_proto", None)
             print(json.dumps(res_dict, ensure_ascii=False, indent=2))
         elif args.format == "proto":
             print(str(result.raw_proto))
+            
+        if getattr(args, "sharex", False):
+            if copy_to_clipboard(result.text):
+                print("OCR result text copied to clipboard.")
+            else:
+                print("Warning: Could not copy text to clipboard.", file=sys.stderr)
             
     except Exception as e:
         print(f"Error running OCR: {e}", file=sys.stderr)
@@ -98,13 +103,25 @@ def handle_info(args):
         except Exception as e:
             print(f"Error reading library info: {e}", file=sys.stderr)
 
+def handle_setup_sharex(args):
+    """Automated ShareX setup command."""
+    model_dir = Path(args.dir) if args.dir else None
+    success = setup_sharex_config(model_dir=model_dir)
+    if success:
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
 def main():
     parser = argparse.ArgumentParser(
         description="Google ScreenAI Command-Line Interface Wrapper",
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     
-    subparsers = parser.add_subparsers(title="commands", dest="command", required=True)
+    parser.add_argument("--setup-sharex", action="store_true", help="Automatically configure ShareX to use screen-ai for OCR")
+    parser.add_argument("-d", "--dir", help="Custom model directory path")
+
+    subparsers = parser.add_subparsers(title="commands", dest="command", required=False)
     
     # Download parser
     download_parser = subparsers.add_parser("download", help="Download ScreenAI library and models")
@@ -116,6 +133,7 @@ def main():
     ocr_parser.add_argument("-i", "--image", required=True, help="Path to image file")
     ocr_parser.add_argument("-d", "--dir", help="Custom model directory path")
     ocr_parser.add_argument("--light", action="store_true", help="Enable light-mode OCR")
+    ocr_parser.add_argument("-sx", "--sharex", action="store_true", help="Copy OCR result text to clipboard")
     ocr_parser.add_argument("--format", choices=["text", "json", "proto"], default="text", help="Output format (default: text)")
     ocr_parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose library logging")
     
@@ -129,9 +147,15 @@ def main():
     info_parser = subparsers.add_parser("info", help="Get installation and library info")
     info_parser.add_argument("-d", "--dir", help="Custom model directory path")
     
+    # Setup ShareX parser
+    sharex_parser = subparsers.add_parser("setup-sharex", help="Automatically configure ShareX integration")
+    sharex_parser.add_argument("-d", "--dir", help="Custom model target directory")
+
     args = parser.parse_args()
     
-    if args.command == "download":
+    if args.setup_sharex or args.command == "setup-sharex":
+        handle_setup_sharex(args)
+    elif args.command == "download":
         handle_download(args)
     elif args.command == "ocr":
         handle_ocr(args)
@@ -139,6 +163,8 @@ def main():
         handle_extract(args)
     elif args.command == "info":
         handle_info(args)
+    else:
+        parser.print_help()
 
 if __name__ == "__main__":
     main()

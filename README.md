@@ -4,6 +4,31 @@ This repository contains a production-ready, cross-platform Python wrapper and C
 
 ---
 
+## 📸 Automated ShareX Setup & Clipboard Integration
+
+If you use **ShareX** on Windows, you can fully automate setup with a single command:
+
+```bash
+screen-ai --setup-sharex
+```
+
+* **Auto-Download:** Checks if ScreenAI binaries and models exist, downloading them automatically if missing.
+* **Auto-Hotkey:** Configures **`Ctrl + Shift + O`** in ShareX to capture screen regions, run Google ScreenAI OCR on-device, and copy text directly to your clipboard.
+
+### Clipboard Copy Flag
+You can also copy OCR results directly to the clipboard from CLI using the `--sharex` / `-sx` flag:
+
+```bash
+screen-ai ocr -i sample.png --sharex
+```
+
+*Note: Install with `[clipboard]` extra for clipboard support:*
+```bash
+pip install -e .[clipboard]
+```
+
+---
+
 ## Installation & Dependency Management
 
 You can install the package locally using `pip` or `uv`.
@@ -12,61 +37,35 @@ You can install the package locally using `pip` or `uv`.
 
 Navigate to the project root containing `setup.py` and run:
 
-#### Using `pip`:
 ```bash
-pip install -e ./google_screen_ai
+pip install -e .[clipboard]
 ```
 
-#### Using `uv`:
+### 2. PyPI / Git Remote Link Installation
+
 ```bash
-uv pip install -e ./google_screen_ai
-```
-
----
-
-### 2. Git Remote Link Installation (Without local clone)
-
-You can install this library directly into another project using its Git source URL.
-
-#### Using `pip`:
-```bash
-pip install "git+https://github.com/bropines/google-screen-ai-wraper.git"
-```
-
-#### Using `uv`:
-```bash
-uv pip install "git+https://github.com/bropines/google-screen-ai-wraper.git"
+pip install "git+https://github.com/bropines/google-screen-ai-wraper.git#egg=google-screen-ai-wraper[clipboard]"
 ```
 
 ---
 
-### 3. Adding as Project Dependency using `uv`
-
-If you manage your project using `uv` (`pyproject.toml` workspace environment), add it directly:
+## CLI Usage Examples
 
 ```bash
-# Add as local path dependency
-uv add --path ./google-screen-ai-wraper
-
-# Add as remote Git dependency
-uv add "git+https://github.com/bropines/google-screen-ai-wraper.git"
-```
-
----
-
-### 4. Running CLI Commands via `uv`
-
-You can run ScreenAI CLI commands directly using `uv run`:
-
-```bash
-# Get library/DLL info
-uv run screen-ai info
+# Get library DLL info & installation status
+screen-ai info
 
 # Download Google ScreenAI binaries and models (~50MB)
-uv run screen-ai download
+screen-ai download
 
-# Run OCR on an image
-uv run screen-ai ocr --image sample.png
+# Run OCR on an image and print text
+screen-ai ocr -i sample.png
+
+# Run OCR and copy text directly to clipboard
+screen-ai ocr -i sample.png --sharex
+
+# Configure ShareX hotkey integration automatically
+screen-ai --setup-sharex
 ```
 
 ---
@@ -76,7 +75,9 @@ uv run screen-ai ocr --image sample.png
 - `google_screen_ai/` — Core Python wrapper package.
   - `downloader.py` — Platform detection and CIPD downloader.
   - `engine.py` — Dynamic library `ctypes` bindings and API engine.
-  - `protos/` — Compiled protobuf serializations (`chrome_screen_ai.proto` & `view_hierarchy.proto`).
+  - `protos/` — Canonical protobuf sources and generated serializations (`chrome_screen_ai.proto` & `view_hierarchy.proto`).
+  - `utils/` — ShareX setup automation and clipboard helper functions.
   - `__main__.py` — Command-line interface logic.
+- `docs/sharex.md` — Detailed ShareX configuration guide.
 - `test_wrapper.py` — Core automated library tests.
-- `setup.py` — Setup script for `google_screen_ai`.
+- `setup.py` / `setup.cfg` / `pyproject.toml` — Package configuration for PyPI build and distribution.

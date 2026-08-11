@@ -72,6 +72,7 @@ class WordBox:
     language: str
     confidence: float
     symbols: List[SymbolBox]
+    whitespace_bounding_box: Optional[Rect] = None
 
 @dataclass
 class LineBox:
@@ -326,12 +327,18 @@ class ScreenAI:
                         ))
                     
                     rect_w = word_pb.bounding_box
+                    ws_box = None
+                    if hasattr(word_pb, "whitespace_bounding_box") and word_pb.whitespace_bounding_box.width > 0:
+                        ws_rect = word_pb.whitespace_bounding_box
+                        ws_box = Rect(ws_rect.x, ws_rect.y, ws_rect.width, ws_rect.height, ws_rect.angle)
+                    
                     words_list.append(WordBox(
                         text=word_pb.utf8_string,
                         bounding_box=Rect(rect_w.x, rect_w.y, rect_w.width, rect_w.height, rect_w.angle),
                         language=word_pb.language,
                         confidence=word_pb.confidence,
-                        symbols=symbols_list
+                        symbols=symbols_list,
+                        whitespace_bounding_box=ws_box
                     ))
                 
                 rect_l = line_pb.bounding_box
