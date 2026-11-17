@@ -12,6 +12,12 @@ from ..downloader import download_screen_ai, is_installed, get_default_model_dir
 
 logger = logging.getLogger("google_screen_ai.sharex_setup")
 
+# The capture the hotkey starts with. RectangleRegion is in every ShareX
+# release; RectangleLight, which this used to name, was removed in ShareX 22.0.
+# ShareX loads a job it no longer knows as "None" and saves that back, so the
+# hotkey stays listed - as "Not selected" - and does nothing when pressed.
+CAPTURE_JOB = "RectangleRegion"
+
 
 def is_sharex_running() -> bool:
     """Checks if ShareX.exe is currently running."""
@@ -147,6 +153,11 @@ def setup_sharex_config(model_dir: Union[str, Path] = None) -> bool:
                 prog["Path"] = executable_path
                 prog["Args"] = 'ocr "$input" --sharex'
                 prog["IsActive"] = True
+                # Repair the capture too: ShareX 22 loads the old
+                # RectangleLight job as "None", and refreshing only the
+                # program left a hotkey that captured nothing.
+                if task.get("Job") in (None, "", "None", "RectangleLight"):
+                    task["Job"] = CAPTURE_JOB
                 exists = True
                 print("Found existing 'screen-ai' task in ShareX. Updating hotkey to Ctrl + Shift + ' and executable path...")
                 break
@@ -158,7 +169,7 @@ def setup_sharex_config(model_dir: Union[str, Path] = None) -> bool:
             "HotkeyInfo": {"Hotkey": "OemQuotes, Control, Shift", "Win": False},
             "TaskSettings": {
                 "Description": "Google ScreenAI OCR (screen-ai)",
-                "Job": "RectangleLight",
+                "Job": CAPTURE_JOB,
                 "UseDefaultAfterCaptureJob": False,
                 "AfterCaptureJob": "SaveImageToFile, PerformActions",
                 "UseDefaultActions": False,
